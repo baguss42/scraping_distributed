@@ -1,2 +1,2 @@
 # scraping_distributed
-for distributed system project at college
+for distributed system project at college.
