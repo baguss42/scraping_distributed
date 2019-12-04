@@ -44,7 +44,7 @@ const scrap = function() {
         res[key] = data;
       }
       let data = JSON.stringify(res, null, 2);
-      fs.writeFileSync('result.json', data);
+      // fs.writeFileSync('result.json', data);
       return res;
     })
     .catch(function(err){
