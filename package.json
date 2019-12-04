@@ -1,0 +1,21 @@
+{
+  "name": "mega_bank_scraper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "bin": "bin.js", 
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "json-socket": "^0.3.0",
+    "network-list": "^1.1.5",
+    "os-utils": "0.0.14",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
+  }
+}
