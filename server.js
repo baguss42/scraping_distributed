@@ -20,6 +20,7 @@ server.on('connection', function(socket) { //This is a standard net.Socket
             // socket.sendEndMessage({cpu_free: cpu_free});
             if (cpu_free > 50) {
                 // socket.sendEndMessage('starting scrapping ...');
+                socket.sendEndMessage("AAAAAAAAAAAAAAAAAA");
                 Scrap().then(function(data) {
                     console.log(data);
                     socket.sendEndMessage(data);
