@@ -7,27 +7,25 @@ var port = 9838;
 var server = net.createServer();
 server.listen(port);
 console.log("server start ...")
-server.on('connection', function(socket) { //This is a standard net.Socket
-    socket = new JsonSocket(socket); //Now we've decorated the net.Socket to be a JsonSocket
+server.on('connection', function(socket) {
+    socket = new JsonSocket(socket); 
     var cpu_free = 0;
     console.log("someone connected!")
-    socket.on('message', function(message) {
-        os.cpuFree(function(v){
-            cpu_free = v*100;
-        })
-        setTimeout(() => {
-            console.log(cpu_free);
-            // socket.sendEndMessage({cpu_free: cpu_free});
-            if (cpu_free > 50) {
-                // socket.sendEndMessage('starting scrapping ...');
-                socket.sendEndMessage("AAAAAAAAAAAAAAAAAA");
-                Scrap().then(function(data) {
-                    console.log(data);
-                    socket.sendEndMessage(data);
-                });
-            }
-        },1000);
-        // var result = message.a + message.b;
-        // var result = scrap();
-    });
+    os.cpuFree(function(v){
+        cpu_free = v*100;
+    })
+    setTimeout(() => {
+        console.log(cpu_free);
+        if (cpu_free < 99) {
+            socket.sendEndMessage({result: cpu_free, status: false});
+        } else {
+            Scrap().then(function(data) {
+                console.log(data);
+                socket.sendEndMessage({result: data, status: true});
+            });
+        }
+    },1000);
+    // socket.on('message', function(message) { // jika menerima pesan
+    //     console.log("start scraping ...");
+    // });
 });
