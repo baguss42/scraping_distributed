@@ -14,18 +14,25 @@ server.on('connection', function(socket) {
     os.cpuFree(function(v){
         cpu_free = v*100;
     })
+    var isRunning = false;
     setTimeout(() => {
         console.log(cpu_free);
-        if (cpu_free < 99) {
-            socket.sendEndMessage({result: cpu_free, status: false});
+        if (cpu_free < 50) {
+            socket.sendMessage({result: cpu_free, status: false, notes: "cpu tidak mencukupi"});
         } else {
-            Scrap().then(function(data) {
-                console.log(data);
-                socket.sendEndMessage({result: data, status: true});
-            });
+            socket.sendMessage({result: cpu_free, status: true, notes: "cpu mencukupi"});
         }
     },1000);
-    // socket.on('message', function(message) { // jika menerima pesan
-    //     console.log("start scraping ...");
-    // });
+    socket.on('message', function(message) { // jika menerima pesan
+        console.log("start scraping ...");
+        Scrap().then(function(data) {
+            result = {
+                result: data,
+                status: true,
+                notes: "data berhasil di scrap"
+            }
+            console.log(result);
+            socket.sendEndMessage(result); // sendEndMessage() socket di tutup
+        });
+    });
 });

@@ -8,13 +8,13 @@ function start() {
     console.log("Client start ...") 
     LANScanner.scan('ip').then(async function( networkList ) {
         networkList.push('10.7.5.81');
-        // networkList.push('10.7.5.99');
-        networkList = ['10.7.5.81'];
+        networkList.push('10.7.5.99');
+        // networkList = ['10.7.5.81'];
         for(var i = 0; i<networkList.length; i++) {
             var host = networkList[i];
             // console.log(host);
-            var res = await scarapConnect(host);
-            cons(res);
+            await scanConnect(host);
+            // cons(res);
             // await scanConnect(host);
             // var data = scanConnect(host);
             // if (typeof data !== "undefined") {
@@ -46,14 +46,15 @@ async function scanConnect(host) {
         console.log("connect to " + host + " ...");
         console.log("waiting for response " + host + " ...");
         socket.on('message', function(data) {
-            if (!data.status) {
-                console.log("cpu tidak memenuhi");
-                console.log(data.result);
-                console.log(data);
-            } else {
-                cons(data);
+            console.log(data.notes);
+            console.log(data.result);
+            if (data.status) {
+                socket.sendMessage("start");
             }
         });
+    });
+    socket.on('disconnect', function(){
+        console.log('disconected');
     });
 }
 
