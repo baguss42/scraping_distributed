@@ -3,6 +3,8 @@ var net = require('net'),
     LANScanner = require('lanscanner'),
     scarapConnect = require('./connect');
 
+var port = 9838;
+var ips = [];
 // Start function
 function start() {
     console.log("Client start ...") 
@@ -14,19 +16,31 @@ function start() {
             var host = networkList[i];
             // console.log(host);
             await scanConnect(host);
-            // cons(res);
-            // await scanConnect(host);
-            // var data = scanConnect(host);
-            // if (typeof data !== "undefined") {
-            //     console.log(data);
-            //     console.log("finish") ;
-            //     process.exit(0); // jika data sudah diterima
-            // }
+        }
+    });
+    // setTimeout(() => {
+    //     console.log(ips);
+    // },5000);
+}
+
+async function testConnect(host) {
+
+    // var JsonSocket = require('json-socket');
+ 
+    JsonSocket.sendSingleMessage(port, host, {type: 'ping'}, function(err) {
+        if (err) {
+            //Something went wrong
+            // throw err;
+        } else {
+
+            console.log('Pinged '+host+' on port '+port);
+            ips.push(host);
         }
     });
 }
 
-function cons(data) {
+
+function close(data) {
     console.log(data);
     console.log("---------------end---------------");
     //  write html file
@@ -35,19 +49,25 @@ function cons(data) {
 }
 
 async function scanConnect(host) {
-    var port = 9838;
     var socket = new JsonSocket(new net.Socket());
     var client = socket.connect(port, host);
     client.on('error', function(ex) {
-        return [];
+        // console.log("error : "+ ex)
         // process.exit(1); // jika data sudah diterima
-        });
+        // console.log(ex);
+    });
     socket.on('connect', function() {
+        connected = true;
         console.log("connect to " + host + " ...");
         console.log("waiting for response " + host + " ...");
+        ips.push(host);
         socket.on('message', function(data) {
             console.log(data.notes);
-            console.log(data.result);
+            if(typeof data.result === "object") {
+                close(data);
+            } else {
+                console.log(data.result);
+            }
             if (data.status) {
                 socket.sendMessage("start");
             }
@@ -59,20 +79,3 @@ async function scanConnect(host) {
 }
 
 start();
-// var host = ['192.168.1.6'];
-// console.log("connect to " + host[0] + " ...");
-// var socket = new JsonSocket(new net.Socket()); //Decorate a standard net.Socket with JsonSocket
-// var client = socket.connect(port, host[0]);
-// client.on('error', function(ex) {
-//     console.log("handled error");
-//     console.log(ex);
-//     });
-// socket.on('connect', function() { //Don't send until we're connected
-//     socket.sendMessage({command: 'start', beginAt: 10});
-//     socket.on('message', function(data) {
-//         console.log(data);
-//         // if (square > 200) {
-//         //     socket.sendMessage({command: 'stop'});
-//         // }
-//     });
-// });

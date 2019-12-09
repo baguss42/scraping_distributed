@@ -24,15 +24,17 @@ server.on('connection', function(socket) {
         }
     },1000);
     socket.on('message', function(message) { // jika menerima pesan
-        console.log("start scraping ...");
-        Scrap().then(function(data) {
-            result = {
-                result: data,
-                status: true,
-                notes: "data berhasil di scrap"
-            }
-            console.log(result);
-            socket.sendEndMessage(result); // sendEndMessage() socket di tutup
-        });
+        if (message == "start") {
+            console.log("start scraping ...");
+            Scrap().then(function(data) {
+                result = {
+                    result: data,
+                    status: true,
+                    notes: "data berhasil di scrap"
+                }
+                console.log(result);
+                socket.sendEndMessage(result); // sendEndMessage() socket di tutup
+            });
+        }
     });
 });
