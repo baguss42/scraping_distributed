@@ -12,7 +12,7 @@ function start() {
     console.log("Client start ...");
     LANScanner.scan('ip').then(async function( networkList ) {
         // networkList.push('10.7.5.81');
-        networkList = ['10.7.5.81','10.7.5.90'];
+        // networkList = ['10.7.5.81','10.7.5.90'];
         for(var i = 0; i<networkList.length; i++) {
             var host = networkList[i];
             var s = await scanConnect(host);
