@@ -1,7 +1,7 @@
 var net = require('net'),
     JsonSocket = require('json-socket'),
     os 	= require('os-utils')
-    Scrap = require('./scrap');
+    Scrap = require('./new_scrap');
  
 var port = 9838;
 var server = net.createServer();
@@ -24,9 +24,9 @@ server.on('connection', function(socket) {
         }
     },1000);
     socket.on('message', function(message) { // jika menerima pesan
-        if (message == "start") {
+        if (message.command == "start") {
             console.log("start scraping ...");
-            Scrap().then(function(data) {
+            Scrap(message.part).then(function(data) {
                 result = {
                     result: data,
                     status: true,

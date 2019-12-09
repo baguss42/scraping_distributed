@@ -4,11 +4,12 @@ const getPromoPage = require('./getPromoPage');
 const fs = require('fs');
 const url = 'https://www.bankmega.com/promolainnya.php';
 
-const scrap = function() {
+const scrap = function(part) {
   // var result = {};
   var result = rp(url)
     .then(function(html){
       let category = [];
+    //   console.log("=====" + part);
       let promos = $('#subcatpromo > div > img', html);
       const mapCategory = { // define category dan id disini karna di website itu manual membuat function klik
         'travel': 1,
@@ -18,13 +19,14 @@ const scrap = function() {
         'dailyneeds': 5,
         'others_promo': 6
       }
-      let part_promo = [promos[0]];
+      console.log(promos[part]);
+      let part_promo = [promos[part]];
       for(let i = 0; i < part_promo.length; i++) {
           category[i] = {
-              'id': promos[i].attribs.id,
-              'cat_id': mapCategory[promos[i].attribs.id],
-              'title': promos[i].attribs.title,
-              'src': promos[i].attribs.src,
+              'id': part_promo[i].attribs.id,
+              'cat_id': mapCategory[part_promo[i].attribs.id],
+              'title': part_promo[i].attribs.title,
+              'src': part_promo[i].attribs.src,
           }
       }
       return Promise.all(
