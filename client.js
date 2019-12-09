@@ -9,8 +9,8 @@ var ips = [];
 function start() {
     console.log("Client start ...") 
     LANScanner.scan('ip').then(async function( networkList ) {
-        networkList.push('10.7.5.81');
-        networkList.push('10.7.5.99');
+        // networkList.push('10.7.5.81');
+        // networkList.push('10.7.5.99');
         // networkList = ['10.7.5.81'];
         for(var i = 0; i<networkList.length; i++) {
             var host = networkList[i];
