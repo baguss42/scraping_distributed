@@ -18,8 +18,10 @@ server.on('connection', function(socket) {
     setTimeout(() => {
         console.log(cpu_free);
         if (cpu_free < 50) {
-            socket.sendMessage({result: cpu_free, status: false, notes: "cpu tidak mencukupi"});
+            console.log("send");
+            socket.sendEndMessage({result: cpu_free, status: false, notes: "cpu tidak mencukupi"});
         } else {
+            console.log("sedn");
             socket.sendMessage({result: cpu_free, status: true, notes: "cpu mencukupi"});
         }
     },1000);
@@ -32,7 +34,7 @@ server.on('connection', function(socket) {
                     status: true,
                     notes: "done"
                 }
-                console.log(result);
+                console.log("scraping done...");
                 socket.sendEndMessage(result); // sendEndMessage() socket di tutup
             });
         }

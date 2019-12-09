@@ -6,6 +6,7 @@ const url = 'https://www.bankmega.com/promolainnya.php';
 
 const scrap = function(part) {
   // var result = {};
+  var promo_cat = "";
   var result = rp(url)
     .then(function(html){
       let category = [];
@@ -19,9 +20,9 @@ const scrap = function(part) {
         'dailyneeds': 5,
         'others_promo': 6
       }
-      console.log(promos[part]);
       let part_promo = [promos[part]];
       for(let i = 0; i < part_promo.length; i++) {
+          promo_cat = part_promo[i].attribs.id;
           category[i] = {
               'id': part_promo[i].attribs.id,
               'cat_id': mapCategory[part_promo[i].attribs.id],
