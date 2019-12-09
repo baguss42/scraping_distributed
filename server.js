@@ -30,7 +30,7 @@ server.on('connection', function(socket) {
                 result = {
                     result: data,
                     status: true,
-                    notes: "data berhasil di scrap"
+                    notes: "done"
                 }
                 console.log(result);
                 socket.sendEndMessage(result); // sendEndMessage() socket di tutup
