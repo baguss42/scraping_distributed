@@ -14,14 +14,13 @@ server.on('connection', function(socket) {
     os.cpuFree(function(v){
         cpu_free = v*100;
     })
-    var isRunning = false;
     setTimeout(() => {
         console.log(cpu_free);
         if (cpu_free < 50) {
-            console.log("send");
+            console.log("send cpu status");
             socket.sendEndMessage({result: cpu_free, status: false, notes: "cpu tidak mencukupi"});
         } else {
-            console.log("sedn");
+            console.log("send cpu status");
             socket.sendMessage({result: cpu_free, status: true, notes: "cpu mencukupi"});
         }
     },1000);

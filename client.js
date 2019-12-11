@@ -11,26 +11,26 @@ var ip_connected = [];
 function start() {
     console.log("Client start ...");
     LANScanner.scan('ip').then(async function( networkList ) {
-        // networkList.push('10.7.5.81');
+        // networkList.push('10.7.5.81'); // for testing only
         // networkList = ['10.7.5.81','10.7.5.90'];
         for(var i = 0; i<networkList.length; i++) {
             var host = networkList[i];
             var s = await scanConnect(host);
             // console.log(s);
             if (i == networkList.length-1) {
-                close();
+                // close();
+                break;
             } 
         }
     });
 }
 
 
-function close(data) {
-    // console.log(data.result);
-    console.log("---------------end---------------");
-    //  write html file
-    //  load html file
-    // process.exit(0); // jika data sudah diterima
+function writeResult(data, ip) {
+    result.push(data);
+    part.shift();
+    fs.writeFileSync('result.json', JSON.stringify(result));
+    fs.appendFileSync('ip_connected_history.txt', ip + ",");
 }
 
 async function scanConnect(host) {
@@ -51,14 +51,14 @@ async function scanConnect(host) {
             ip_connected.push(host);
             socket.on('message', function(data) {
                 console.log(data.notes);
-                if(data.status && data.notes == "done") {
-                    // close(data);
-                    result.push(data.result);
-                    part.shift();
+                if(data.status && data.notes == "done") { // write result
                     resolve(true);
-                    fs.writeFileSync('result.json', JSON.stringify(result));
+                    var res = data.result;
+                    if (!isEmpty(res)) {
+                        writeResult(res,host);
+                    }
                 }
-                if (data.status && data.notes != "done") {
+                if (data.status && data.notes != "done") { // cpu ok
                     var command = {
                         command: "start",
                         part: part.length-1
@@ -67,7 +67,7 @@ async function scanConnect(host) {
                     console.log(command);
                     socket.sendMessage(command);
                 }
-                if (!data.status) {
+                if (!data.status) { // cpu not ok
                     resolve(true);
                 }
             });
@@ -76,6 +76,15 @@ async function scanConnect(host) {
             console.log('disconected');
         });
     });
+}
+
+function isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return true;
 }
 
 start();
