@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 100px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="line-chart" width="800" height="430"></canvas>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script>
+    var data = {"10.7.5.90":[74.93975903614458,76.144578313253,81.48148148148148,93.8118811881188,90.70904645476773,90.55690072639226,81.02189781021897,87.86407766990291,91.2621359223301,89.92805755395683,93.58024691358024,80.89330024813896,77.80548628428927,72.22222222222221,78.44611528822055,75.42997542997543,90.7035175879397],"10.7.5.81":[78.57142857142857,69.47115384615384,77.14987714987716,73.15270935960592,80.84577114427861,79.26829268292683,77.75,73.25,77.20588235294117,80.09950248756219,75.79462102689487,72.7047146401985]}
+
+    var max_label = 0;
+    var dataset = [];
+    for(var i in data) {
+        var ip = data[i];
+        var record = {
+            data: ip,
+            label: i,
+            borderColor: getRandomColor(),
+            fill: false
+        }
+        dataset.push(record);
+        if (max_label<ip.length) {
+            max_label = ip.length;
+        }
+    }
+    var labels = [];
+    for(var y = 0; y < max_label; y++) {
+        labels.push(y);
+    }
+    new Chart(document.getElementById("line-chart"), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: dataset
+        },
+        options: {
+            title: {
+            display: true,
+            text: 'Scraping idle time & cpu free'
+            }
+        }
+    });
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+    </script>
+</body>
+</html>

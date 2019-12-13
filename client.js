@@ -13,7 +13,7 @@ var idle = {};
 function start() {
     console.log("Client start ...");
     LANScanner.scan('ip').then(async function( networkList ) {
-        // networkList.push('10.7.5.81'); // for testing only
+        networkList.push('10.7.5.81'); // for testing only
         // networkList = ['10.7.5.81','10.7.5.90'];
         for(var i = 0; i<networkList.length; i++) {
             var host = networkList[i];
@@ -21,7 +21,6 @@ function start() {
             // console.log(s);
             if (result.length == len) break;
             if (i == networkList.length-1) {
-                fs.writeFileSync('idle.json', JSON.stringify(idle));
                 break;
             } 
         }
@@ -53,6 +52,7 @@ async function scanConnect(host) {
             console.log("waiting for response " + host + " ...");
             ip_connected.push(host);
             socket.on('message', function(data) {
+                console.log(data);
                 if(data.status && data.notes == "idle") {
                     var ips = data.ip.toString();
                         if (typeof idle[ips] === "undefined") {
@@ -62,6 +62,9 @@ async function scanConnect(host) {
                             temp.push(data.result);
                             idle[ips] = temp
                         }
+                    console.log("idle notes:");
+                    console.log(idle);
+                    fs.writeFileSync('idle.json', JSON.stringify(idle));
                     socket.sendMessage("send_idle");
                 }
                 if(data.status && data.notes == "done") { // write result
