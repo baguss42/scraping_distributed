@@ -6,7 +6,9 @@ var net = require('net'),
 var port = 9838;
 var result = [];
 var part = [1,2,3,4,5,6];
+var len = part.length;
 var ip_connected = [];
+var idle = {};
 // Start function
 function start() {
     console.log("Client start ...");
@@ -17,8 +19,9 @@ function start() {
             var host = networkList[i];
             var s = await scanConnect(host);
             // console.log(s);
+            if (result.length == len) break;
             if (i == networkList.length-1) {
-                // close();
+                fs.writeFileSync('idle.json', JSON.stringify(idle));
                 break;
             } 
         }
@@ -50,7 +53,17 @@ async function scanConnect(host) {
             console.log("waiting for response " + host + " ...");
             ip_connected.push(host);
             socket.on('message', function(data) {
-                console.log(data.notes);
+                if(data.status && data.notes == "idle") {
+                    var ips = data.ip.toString();
+                        if (typeof idle[ips] === "undefined") {
+                            idle[ips] = [data.result];
+                        } else {
+                            var temp = idle[ips];
+                            temp.push(data.result);
+                            idle[ips] = temp
+                        }
+                    socket.sendMessage("send_idle");
+                }
                 if(data.status && data.notes == "done") { // write result
                     resolve(true);
                     var res = data.result;
@@ -58,7 +71,7 @@ async function scanConnect(host) {
                         writeResult(res,host);
                     }
                 }
-                if (data.status && data.notes != "done") { // cpu ok
+                if (data.status && data.notes == "cpu mencukupi") { // cpu ok
                     var command = {
                         command: "start",
                         part: part.length-1

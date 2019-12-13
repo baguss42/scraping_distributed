@@ -1,15 +1,18 @@
 var net = require('net'),
     JsonSocket = require('json-socket'),
-    os 	= require('os-utils')
+    os 	= require('os-utils'),
+    ip  = require('ip');
     Scrap = require('./new_scrap');
  
 var port = 9838;
 var server = net.createServer();
 server.listen(port);
 console.log("server start ...")
+var ip_server = ip.address();
 server.on('connection', function(socket) {
     socket = new JsonSocket(socket); 
     var cpu_free = 0;
+    var secs = 1;
     console.log("someone connected!")
     os.cpuFree(function(v){
         cpu_free = v*100;
@@ -36,6 +39,33 @@ server.on('connection', function(socket) {
                 console.log("scraping done...");
                 socket.sendEndMessage(result); // sendEndMessage() socket di tutup
             });
+            os.cpuFree(function(v){
+                cpu_free = v*100;
+            })
+            setTimeout(() => {
+                socket.sendMessage({
+                    result: cpu_free,
+                    secs: 0, 
+                    status: true, 
+                    notes: "idle",
+                    ip: ip_server
+                });
+            },1000);
+        }
+        if (message == "send_idle") {
+            os.cpuFree(function(v){
+                cpu_free = v*100;
+            })
+            setTimeout(() => {
+                socket.sendMessage({
+                    result: cpu_free, 
+                    secs: secs, 
+                    status: true, 
+                    notes: "idle", 
+                    ip: ip_server
+                });
+                secs++;
+            },1000);
         }
     });
 });
