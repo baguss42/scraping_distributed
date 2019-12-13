@@ -21,13 +21,13 @@ const scrap = function(part) {
         'others_promo': 6
       }
       let part_promo = [promos[part]];
-      for(let i = 0; i < part_promo.length; i++) {
-          promo_cat = part_promo[i].attribs.id;
+      for(let i = 0; i < promos.length; i++) { // change to promo to scrap all
+          promo_cat = promos[i].attribs.id;
           category[i] = {
-              'id': part_promo[i].attribs.id,
-              'cat_id': mapCategory[part_promo[i].attribs.id],
-              'title': part_promo[i].attribs.title,
-              'src': part_promo[i].attribs.src,
+              'id': promos[i].attribs.id,
+              'cat_id': mapCategory[promos[i].attribs.id],
+              'title': promos[i].attribs.title,
+              'src': promos[i].attribs.src,
           }
       }
       return Promise.all(
