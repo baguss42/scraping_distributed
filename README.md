@@ -4,7 +4,7 @@ Distributed Scraping is program for scraping web credit card promos by using cpu
 
 ## Installation
 
-Make sure [node](https://pip.pypa.io/en/stable/) has been installed on your machine.
+Make sure [node](https://nodejs.org/en/download/) has been installed on your machine.
 
 ```bash
 sudo apt install nodejs
